@@ -46,3 +46,9 @@ nvim --version
 ```bash
 git clone https://github.com/sebastiannberg/neovim-config.git nvim
 ```
+
+### WSL Clipboard Support
+for clipboard sync between WSL and Windows clipboard
+- download win32yank.exe
+- add win32yank.exe location to PATH
+- neovim in WSL will automatically use win32yank.exe for clipboard operations
