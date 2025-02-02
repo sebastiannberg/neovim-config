@@ -1,7 +1,4 @@
 # neovim-config
-Inspired by neovim kickstart
-
-## Install
 
 ### Required Tools
 - nodejs and npm
@@ -52,3 +49,18 @@ for clipboard sync between WSL and Windows clipboard
 - download win32yank.exe
 - add win32yank.exe location to PATH
 - neovim in WSL will automatically use win32yank.exe for clipboard operations
+
+### SSH Clipboard Support
+```lua
+vim.g.clipboard = {
+  name = 'OSC 52',
+  copy = {
+    ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+    ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+  },
+  paste = {
+    ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+    ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+  },
+}
+```
