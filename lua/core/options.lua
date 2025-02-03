@@ -7,9 +7,6 @@ vim.schedule(function()
   vim.opt.clipboard = 'unnamedplus'
 end)
 
--- Disable vim built-in syntax highlighting
-vim.cmd("syntax off")
-
 -- Enable mouse mode, can be useful for resizing splits for example
 vim.opt.mouse = 'a'
 
