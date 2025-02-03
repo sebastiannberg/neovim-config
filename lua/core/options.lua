@@ -1,6 +1,12 @@
 -- Make line numbers default
 vim.opt.number = true
 
+-- Sync clipboard between OS and Neovim
+-- Schedule the setting after UiEnter because it can increase startup-time
+vim.schedule(function()
+  vim.opt.clipboard = 'unnamedplus'
+end)
+
 -- Enable mouse mode, can be useful for resizing splits for example
 vim.opt.mouse = 'a'
 
@@ -26,10 +32,10 @@ vim.opt.smartcase = true
 vim.opt.signcolumn = 'yes'
 
 -- Decrease update time
-vim.opt.updatetime = 300
+vim.opt.updatetime = 400
 
 -- Decrease mapped sequence wait time
-vim.opt.timeoutlen = 300
+vim.opt.timeoutlen = 400
 
 -- Configure how new splits should be opened
 vim.opt.splitright = true
@@ -44,11 +50,4 @@ vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
-
--- Sync clipboard between OS and Neovim
--- Schedule the setting after UiEnter because it can increase startup-time
-vim.schedule(function()
-  vim.opt.clipboard = 'unnamedplus'
-end)
-
 
