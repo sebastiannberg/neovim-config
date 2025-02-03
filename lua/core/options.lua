@@ -45,10 +45,3 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
--- Sync clipboard between OS and Neovim
--- Schedule the setting after UiEnter because it can increase startup-time
-vim.schedule(function()
-  vim.opt.clipboard = 'unnamedplus'
-end)
-
-
