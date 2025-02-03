@@ -40,4 +40,7 @@ vim.opt.rtp:prepend(lazypath)
 -- Initialize lazy.nvim
 require('lazy').setup('plugins')
 
+-- Set colorscheme after lazy.nvim has initialized
+vim.cmd([[colorscheme catppuccin]])
+
 -- vim: ts=2 sts=2 sw=2 et
