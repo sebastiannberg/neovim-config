@@ -7,6 +7,10 @@ vim.keymap.set('n', '<leader>st', function()
   vim.cmd 'startinsert'
 end, { desc = 'Open a small terminal' })
 
+-- Move lines up or down
+vim.keymap.set('n', '<A-j>', ':m .+1<CR>==', { desc = 'Move line down', silent = true })
+vim.keymap.set('n', '<A-k>', ':m .-2<CR>==', { desc = 'Move line up', silent = true })
+
 -- Disable arrow keys in normal mode
 vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
 vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
