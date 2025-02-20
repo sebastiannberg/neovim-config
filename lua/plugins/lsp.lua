@@ -11,7 +11,7 @@ return {
     dependencies = { 'neovim/nvim-lspconfig' },
     config = function()
       require('mason-lspconfig').setup({
-        ensure_installed = { 'lua_ls', 'basedpyright' },
+        ensure_installed = { 'lua_ls', 'basedpyright', 'clangd' },
       })
     end,
   },
@@ -61,6 +61,11 @@ return {
             },
           },
         },
+      })
+
+      -- C/C++
+      lspconfig.clangd.setup({
+        on_attach = on_attach,
       })
 
     end,
