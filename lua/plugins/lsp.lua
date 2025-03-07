@@ -63,6 +63,11 @@ return {
           basedpyright = {
             analysis = {
               typeCheckingMode = 'basic',
+              diagnosticSeverityOverrides = {
+                reportArgumentType = 'none',
+                reportUnknownVariableType = 'none',
+                reportAttributeAccessIssue = 'none',
+             },
             },
           },
         },
