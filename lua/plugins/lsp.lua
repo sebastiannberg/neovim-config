@@ -1,21 +1,5 @@
 return {
   {
-    'williamboman/mason.nvim',
-    build = ':MasonUpdate',
-    config = function()
-      require('mason').setup()
-    end,
-  },
-  {
-    'williamboman/mason-lspconfig.nvim',
-    dependencies = { 'neovim/nvim-lspconfig' },
-    config = function()
-      require('mason-lspconfig').setup({
-        ensure_installed = { 'lua_ls', 'basedpyright', 'clangd' },
-      })
-    end,
-  },
-  {
     'neovim/nvim-lspconfig',
     config = function()
       local lspconfig = require('lspconfig')
@@ -78,7 +62,14 @@ return {
         on_attach = on_attach,
       })
 
+      -- -- Vespa.ai
+      vim.lsp.config('vespa_ls', {
+          cmd = { 'java', '-jar', '/Users/sebasabe/lsp/vespa-language-server_2.4.4.jar' },
+          on_attach = on_attach,
+      })
+
+      vim.lsp.enable('vespa_ls')
+
     end,
   },
 }
-
