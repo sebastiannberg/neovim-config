@@ -2,46 +2,38 @@ return {
   {
     'neovim/nvim-lspconfig',
     config = function()
-      local lspconfig = require('lspconfig')
-
       local on_attach = function(client, bufnr)
-        -- enable LSP semantic tokens
         if client.server_capabilities.semanticTokensProvider then
           print('✅ LSP: Semantic tokens enabled for ' .. client.name)
           vim.lsp.semantic_tokens.start(bufnr, client.id)
         else
           print('❌ LSP: Semantic tokens disabled for ' .. client.name)
         end
-
-        -- LSP keymaps
         local opts = { noremap = true, silent = true, buffer = bufnr }
         vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
         vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-        vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
         vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
         vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-        vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+        vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
         vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, opts)
+        vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
       end
 
       -- lua
-      lspconfig.lua_ls.setup({
+      vim.lsp.config('lua_ls', {
         on_attach = on_attach,
         settings = {
           Lua = {
-            runtime = { version = 'LuaJIT' },
             diagnostics = { globals = { 'vim' } },
-            workspace = {
-              library = vim.api.nvim_get_runtime_file('', true),
-              checkThirdParty = false,
-            },
+            workspace = { library = vim.api.nvim_get_runtime_file('', true), checkThirdParty = false },
             telemetry = { enable = false },
           },
         },
       })
+      vim.lsp.enable('lua_ls')
 
       -- python
-      lspconfig.basedpyright.setup({
+      vim.lsp.config('basedpyright', {
         on_attach = on_attach,
         settings = {
           basedpyright = {
@@ -51,23 +43,18 @@ return {
                 reportArgumentType = 'none',
                 reportUnknownVariableType = 'none',
                 reportAttributeAccessIssue = 'none',
-             },
+              },
             },
           },
         },
       })
+      vim.lsp.enable('basedpyright')
 
-      -- C/C++
-      lspconfig.clangd.setup({
-        on_attach = on_attach,
-      })
-
-      -- -- Vespa.ai
+      -- vespa
       vim.lsp.config('vespa_ls', {
-          cmd = { 'java', '-jar', '/Users/sebasabe/lsp/vespa-language-server_2.4.4.jar' },
-          on_attach = on_attach,
+        on_attach = on_attach,
+        cmd = { 'java', '-jar', '/Users/sebasabe/lsp/vespa-language-server_2.4.4.jar' },
       })
-
       vim.lsp.enable('vespa_ls')
 
     end,
