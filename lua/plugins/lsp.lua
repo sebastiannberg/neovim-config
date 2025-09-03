@@ -45,6 +45,12 @@ return {
       })
       vim.lsp.enable('basedpyright')
 
+      -- java
+      vim.lsp.config('jdtls', {
+        on_attach = on_attach,
+      })
+      vim.lsp.enable('jdtls')
+
       -- vespa
       vim.lsp.config('vespa_ls', {
         on_attach = on_attach,
