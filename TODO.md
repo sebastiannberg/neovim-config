@@ -1,5 +1,4 @@
 global todo
-- open float window with all lsp reported errors, warnings etc. (all dianostics) this mimics "problems" tabs in ides
 - add autocompletions as good as in ides
 
 java
