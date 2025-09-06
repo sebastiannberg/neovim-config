@@ -1,5 +1,4 @@
 global todo
-- highlight all references of same word or var on hover (not lsp i think)
 - open float window with all lsp reported errors, warnings etc. (all dianostics) this mimics "problems" tabs in ides
 - add autocompletions as good as in ides
 
