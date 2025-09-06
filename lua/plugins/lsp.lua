@@ -19,9 +19,12 @@ return {
         vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, opts)
       end
 
+      local capabilities = require("cmp_nvim_lsp").default_capabilities()
+
       -- lua
       vim.lsp.config('lua_ls', {
         on_attach = on_attach,
+        capabilities = capabilities,
         settings = {
           Lua = {
             diagnostics = { globals = { 'vim' } },
@@ -35,6 +38,7 @@ return {
       -- python
       vim.lsp.config('basedpyright', {
         on_attach = on_attach,
+        capabilities = capabilities,
         settings = {
           basedpyright = {
             analysis = {
@@ -48,12 +52,14 @@ return {
       -- java
       vim.lsp.config('jdtls', {
         on_attach = on_attach,
+        capabilities = capabilities,
       })
       vim.lsp.enable('jdtls')
 
       -- vespa
       vim.lsp.config('vespa_ls', {
         on_attach = on_attach,
+        capabilities = capabilities,
         cmd = { 'java', '-jar', '/Users/sebasabe/lsp/vespa-language-server_2.4.4.jar' },
       })
       vim.lsp.enable('vespa_ls')

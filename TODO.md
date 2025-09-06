@@ -1,5 +1,4 @@
 global todo
-- add autocompletions as good as in ides
 - better status line aesthetics and filenames statusline handling
 
 java
