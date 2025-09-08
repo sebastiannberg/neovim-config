@@ -17,6 +17,7 @@ return {
         vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
         vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
         vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, opts)
+        vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts)
       end
 
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
