@@ -43,6 +43,7 @@ return {
           basedpyright = {
             analysis = {
               typeCheckingMode = 'basic',
+              autoImportCompletions = false,
             },
           },
         },
