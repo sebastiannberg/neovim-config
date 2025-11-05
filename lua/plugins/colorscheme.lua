@@ -9,7 +9,9 @@ return {
     name = 'catppuccin',
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme('catppuccin-latte')
+      local is_mac = vim.fn.has('macunix') == 1
+      local flavor = is_mac and 'catppuccin-latte' or 'catppuccin-mocha'
+      vim.cmd.colorscheme(flavor)
     end,
   }
 }
