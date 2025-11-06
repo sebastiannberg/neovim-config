@@ -55,6 +55,13 @@ return {
       vim.lsp.config('jdtls', {
         on_attach = on_attach,
         capabilities = capabilities,
+        cmd = {
+          -- Use Java 25 to run jdtls
+          "/opt/homebrew/Cellar/openjdk/25.0.1/libexec/openjdk.jdk/Contents/Home/bin/java",
+          "-jar", vim.fn.glob("/opt/homebrew/Cellar/jdtls/1.52.0/libexec/plugins/org.eclipse.equinox.launcher_*.jar"),
+          "-configuration", vim.fn.expand("~/.cache/nvim/jdtls/config"),
+          "-data", vim.fn.expand("~/.cache/nvim/jdtls/workspace"),
+        },
       })
       vim.lsp.enable('jdtls')
 
