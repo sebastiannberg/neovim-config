@@ -52,15 +52,31 @@ return {
       vim.lsp.enable('basedpyright')
 
       -- java
+      -- Keep JDTLS launcher via Homebrew symlink and sync its config into a writable cache.
+      local home = "/opt/homebrew/opt/jdtls/libexec"
+      local launcher = vim.fn.glob(home .. "/plugins/org.eclipse.equinox.launcher_*.jar")
+      local config_src = home .. "/config_mac_arm"
+      local cache_root = vim.fn.stdpath("cache") .. "/jdtls"
+      local config_dst = cache_root .. "/config_mac_arm"
+      local stamp = config_dst .. "/.jdtls-version"
+      local launcher_tag = vim.fn.fnamemodify(launcher, ":t")
+
+      if vim.fn.filereadable(stamp) == 0 or vim.fn.readfile(stamp)[1] ~= launcher_tag then
+        vim.fn.mkdir(config_dst, "p")
+        -- Copy bundled config into writable dir; rsync avoids re-copying unchanged files.
+        vim.fn.system({ "rsync", "-a", config_src .. "/", config_dst .. "/" })
+        vim.fn.writefile({ launcher_tag }, stamp)
+      end
+
       vim.lsp.config('jdtls', {
         on_attach = on_attach,
         capabilities = capabilities,
         cmd = {
-          -- Use Java 25 to run jdtls
+          -- Use Java 25 to run jdtls; shell JAVA_HOME can stay on 17
           "/opt/homebrew/Cellar/openjdk/25.0.1/libexec/openjdk.jdk/Contents/Home/bin/java",
-          "-jar", vim.fn.glob("/opt/homebrew/Cellar/jdtls/1.52.0/libexec/plugins/org.eclipse.equinox.launcher_*.jar"),
-          "-configuration", vim.fn.expand("~/.cache/nvim/jdtls/config"),
-          "-data", vim.fn.expand("~/.cache/nvim/jdtls/workspace"),
+          "-jar", launcher,
+          "-configuration", config_dst,
+          "-data", cache_root .. "/workspace",
         },
       })
       vim.lsp.enable('jdtls')
