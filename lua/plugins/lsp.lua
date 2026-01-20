@@ -68,15 +68,26 @@ return {
         vim.fn.writefile({ launcher_tag }, stamp)
       end
 
+      -- Use project-specific workspace to isolate projects and prevent cross-contamination
+      local function get_jdtls_workspace()
+        local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
+        return cache_root .. "/workspace/" .. project_name
+      end
+
       vim.lsp.config('jdtls', {
         on_attach = on_attach,
         capabilities = capabilities,
         cmd = {
           -- Use Java 25 to run jdtls; shell JAVA_HOME can stay on 17
           "/opt/homebrew/Cellar/openjdk/25.0.1/libexec/openjdk.jdk/Contents/Home/bin/java",
+          -- Increase heap for large projects like AWS SDK
+          "-Xmx4g",
+          "-XX:+UseG1GC",
+          "-XX:+UseStringDeduplication",
+          "-Dosgi.logfile=" .. cache_root .. "/jdtls.log",
           "-jar", launcher,
           "-configuration", config_dst,
-          "-data", cache_root .. "/workspace",
+          "-data", get_jdtls_workspace(),
         },
       })
       vim.lsp.enable('jdtls')
