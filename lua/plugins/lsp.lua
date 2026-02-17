@@ -59,13 +59,14 @@ return {
       local cache_root = vim.fn.stdpath("cache") .. "/jdtls"
       local config_dst = cache_root .. "/config_mac_arm"
       local stamp = config_dst .. "/.jdtls-version"
-      local launcher_tag = vim.fn.fnamemodify(launcher, ":t")
+      -- Use checksum of source config.ini so ANY plugin version change triggers re-sync
+      local src_hash = vim.fn.trim(vim.fn.system({ "shasum", "-a", "256", config_src .. "/config.ini" }))
 
-      if vim.fn.filereadable(stamp) == 0 or vim.fn.readfile(stamp)[1] ~= launcher_tag then
+      if vim.fn.filereadable(stamp) == 0 or vim.fn.readfile(stamp)[1] ~= src_hash then
+        vim.fn.delete(config_dst, "rf")
         vim.fn.mkdir(config_dst, "p")
-        -- Copy bundled config into writable dir; rsync avoids re-copying unchanged files.
         vim.fn.system({ "rsync", "-a", config_src .. "/", config_dst .. "/" })
-        vim.fn.writefile({ launcher_tag }, stamp)
+        vim.fn.writefile({ src_hash }, stamp)
       end
 
       -- Use project-specific workspace to isolate projects and prevent cross-contamination
@@ -79,7 +80,7 @@ return {
         capabilities = capabilities,
         cmd = {
           -- Use Java 25 to run jdtls; shell JAVA_HOME can stay on 17
-          "/opt/homebrew/Cellar/openjdk/25.0.1/libexec/openjdk.jdk/Contents/Home/bin/java",
+          "/opt/homebrew/Cellar/openjdk/25.0.2/libexec/openjdk.jdk/Contents/Home/bin/java",
           -- Increase heap for large projects like AWS SDK
           "-Xmx4g",
           "-XX:+UseG1GC",
