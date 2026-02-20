@@ -18,6 +18,7 @@ return {
         vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
         vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, opts)
         vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts)
+        vim.keymap.set('n', '<leader>f', vim.lsp.buf.format, opts)
       end
 
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
@@ -92,6 +93,22 @@ return {
         },
       })
       vim.lsp.enable('jdtls')
+
+      -- go
+      vim.lsp.config('gopls', {
+        on_attach = on_attach,
+        capabilities = capabilities,
+        settings = {
+          gopls = {
+            analyses = {
+              unusedparams = true,
+            },
+            staticcheck = true,
+            gofumpt = true,
+          },
+        },
+      })
+      vim.lsp.enable('gopls')
 
       -- vespa
       vim.lsp.config('vespa_ls', {
