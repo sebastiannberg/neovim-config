@@ -53,46 +53,30 @@ return {
       vim.lsp.enable('basedpyright')
 
       -- java
-      -- Keep JDTLS launcher via Homebrew symlink and sync its config into a writable cache.
-      local home = "/opt/homebrew/opt/jdtls/libexec"
-      local launcher = vim.fn.glob(home .. "/plugins/org.eclipse.equinox.launcher_*.jar")
-      local config_src = home .. "/config_mac_arm"
-      local cache_root = vim.fn.stdpath("cache") .. "/jdtls"
-      local config_dst = cache_root .. "/config_mac_arm"
-      local stamp = config_dst .. "/.jdtls-version"
-      -- Use checksum of source config.ini so ANY plugin version change triggers re-sync
-      local src_hash = vim.fn.trim(vim.fn.system({ "shasum", "-a", "256", config_src .. "/config.ini" }))
-
-      if vim.fn.filereadable(stamp) == 0 or vim.fn.readfile(stamp)[1] ~= src_hash then
-        vim.fn.delete(config_dst, "rf")
-        vim.fn.mkdir(config_dst, "p")
-        vim.fn.system({ "rsync", "-a", config_src .. "/", config_dst .. "/" })
-        vim.fn.writefile({ src_hash }, stamp)
-      end
-
-      -- Use project-specific workspace to isolate projects and prevent cross-contamination
-      local function get_jdtls_workspace()
-        local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
-        return cache_root .. "/workspace/" .. project_name
-      end
-
-      vim.lsp.config('jdtls', {
-        on_attach = on_attach,
-        capabilities = capabilities,
-        cmd = {
-          -- Use Java 25 to run jdtls; shell JAVA_HOME can stay on 17
-          "/opt/homebrew/Cellar/openjdk/25.0.2/libexec/openjdk.jdk/Contents/Home/bin/java",
-          -- Increase heap for large projects like AWS SDK
-          "-Xmx4g",
-          "-XX:+UseG1GC",
-          "-XX:+UseStringDeduplication",
-          "-Dosgi.logfile=" .. cache_root .. "/jdtls.log",
-          "-jar", launcher,
-          "-configuration", config_dst,
-          "-data", get_jdtls_workspace(),
-        },
+      -- Use the jdtls wrapper script which handles all JVM args, config paths, and Java 24+ compat.
+      -- Dynamic workspace per detected project root to isolate projects.
+      local jdtls_cache = vim.fn.stdpath("cache") .. "/jdtls"
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'java',
+        callback = function()
+          local root = vim.fs.root(0, { 'pom.xml', 'build.gradle', 'build.gradle.kts', 'settings.gradle', 'settings.gradle.kts', '.git' })
+          local project_name = root and vim.fn.fnamemodify(root, ":t") or "default"
+          vim.lsp.start({
+            name = 'jdtls',
+            on_attach = on_attach,
+            capabilities = capabilities,
+            root_dir = root,
+            cmd = {
+              'jdtls',
+              '--java-executable', '/opt/homebrew/Cellar/openjdk/25.0.2/libexec/openjdk.jdk/Contents/Home/bin/java',
+              '--jvm-arg=-Xmx4g',
+              '--jvm-arg=-XX:+UseG1GC',
+              '--jvm-arg=-XX:+UseStringDeduplication',
+              '-data', jdtls_cache .. '/workspace/' .. project_name,
+            },
+          })
+        end,
       })
-      vim.lsp.enable('jdtls')
 
       -- go
       vim.lsp.config('gopls', {
