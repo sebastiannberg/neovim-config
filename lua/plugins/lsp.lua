@@ -53,7 +53,6 @@ return {
       vim.lsp.enable('basedpyright')
 
       -- java
-      -- Use the jdtls wrapper script which handles all JVM args, config paths, and Java 24+ compat.
       -- Dynamic workspace per detected project root to isolate projects.
       local jdtls_cache = vim.fn.stdpath("cache") .. "/jdtls"
       vim.api.nvim_create_autocmd('FileType', {
@@ -61,7 +60,7 @@ return {
         callback = function()
           local root = vim.fs.root(0, { 'pom.xml', 'build.gradle', 'build.gradle.kts', 'settings.gradle', 'settings.gradle.kts', '.git' })
           local project_name = root and vim.fn.fnamemodify(root, ":t") or "default"
-          vim.lsp.start({
+          require('jdtls').start_or_attach({
             name = 'jdtls',
             on_attach = on_attach,
             capabilities = capabilities,
@@ -73,6 +72,11 @@ return {
               '--jvm-arg=-XX:+UseG1GC',
               '--jvm-arg=-XX:+UseStringDeduplication',
               '-data', jdtls_cache .. '/workspace/' .. project_name,
+            },
+            settings = {
+              java = {
+                contentProvider = { preferred = 'fernflower' },
+              },
             },
           })
         end,
