@@ -98,6 +98,18 @@ return {
       })
       vim.lsp.enable('gopls')
 
+      -- haskell
+      vim.lsp.config('hls', {
+        on_attach = on_attach,
+        capabilities = capabilities,
+        settings = {
+          haskell = {
+            formattingProvider = 'ormolu',
+          },
+        },
+      })
+      vim.lsp.enable('hls')
+
       -- vespa
       vim.lsp.config('vespa_ls', {
         on_attach = on_attach,
