@@ -5,7 +5,7 @@ return {
       local on_attach = function(client, bufnr)
         if client.server_capabilities.semanticTokensProvider then
           print('✅ LSP: Semantic tokens enabled for ' .. client.name)
-          vim.lsp.semantic_tokens.start(bufnr, client.id)
+          vim.lsp.semantic_tokens.enable(true, { bufnr = bufnr })
         else
           print('❌ LSP: Semantic tokens disabled for ' .. client.name)
         end
