@@ -114,7 +114,7 @@ return {
       vim.lsp.config('vespa_ls', {
         on_attach = on_attach,
         capabilities = capabilities,
-        cmd = { 'java', '-jar', '/Users/sebasabe/lsp/vespa-language-server_2.4.4.jar' },
+        cmd = { 'java', '-jar', '/Users/sebasabe/.local/bin/vespa-language-server_2.4.9.jar' },
       })
       vim.lsp.enable('vespa_ls')
 
