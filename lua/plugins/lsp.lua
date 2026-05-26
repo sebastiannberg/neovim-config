@@ -67,7 +67,7 @@ return {
             root_dir = root,
             cmd = {
               'jdtls',
-              '--java-executable', '/opt/homebrew/Cellar/openjdk/25.0.2/libexec/openjdk.jdk/Contents/Home/bin/java',
+              '--java-executable', '/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home/bin/java',
               '--jvm-arg=-Xmx4g',
               '--jvm-arg=-XX:+UseG1GC',
               '--jvm-arg=-XX:+UseStringDeduplication',
