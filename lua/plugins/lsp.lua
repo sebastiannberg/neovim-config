@@ -55,10 +55,22 @@ return {
       -- java
       -- Dynamic workspace per detected project root to isolate projects.
       local jdtls_cache = vim.fn.stdpath("cache") .. "/jdtls"
+      -- Maven reactor root: walk up to the OUTERMOST pom.xml so jdtls imports the whole
+      -- multi-module reactor, not just the leaf module
+      local function maven_reactor_root(bufnr)
+        local dir = vim.fs.dirname(vim.api.nvim_buf_get_name(bufnr))
+        local found = nil
+        while dir and dir ~= '/' do
+          if vim.uv.fs_stat(dir .. '/pom.xml') then found = dir end
+          dir = vim.fs.dirname(dir)
+        end
+        return found
+      end
       vim.api.nvim_create_autocmd('FileType', {
         pattern = 'java',
         callback = function()
-          local root = vim.fs.root(0, { 'pom.xml', 'build.gradle', 'build.gradle.kts', 'settings.gradle', 'settings.gradle.kts', '.git' })
+          local root = maven_reactor_root(0)
+            or vim.fs.root(0, { 'build.gradle', 'build.gradle.kts', 'settings.gradle', 'settings.gradle.kts', '.git' })
           local project_name = root and vim.fn.fnamemodify(root, ":t") or "default"
           require('jdtls').start_or_attach({
             name = 'jdtls',
