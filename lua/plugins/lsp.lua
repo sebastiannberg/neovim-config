@@ -69,6 +69,7 @@ return {
       vim.api.nvim_create_autocmd('FileType', {
         pattern = 'java',
         callback = function()
+          if vim.api.nvim_buf_get_name(0):match('^%w+://') then return end
           local root = maven_reactor_root(0)
             or vim.fs.root(0, { 'build.gradle', 'build.gradle.kts', 'settings.gradle', 'settings.gradle.kts', '.git' })
           local project_name = root and vim.fn.fnamemodify(root, ":t") or "default"
