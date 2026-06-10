@@ -3,6 +3,10 @@ return {
     'neovim/nvim-lspconfig',
     config = function()
       local on_attach = function(client, bufnr)
+        -- jdt:// dep buffers have no .java extension, so set filetype for highlighting.
+        if vim.api.nvim_buf_get_name(bufnr):match('^jdt://') and vim.bo[bufnr].filetype ~= 'java' then
+          vim.bo[bufnr].filetype = 'java'
+        end
         if client.server_capabilities.semanticTokensProvider then
           print('✅ LSP: Semantic tokens enabled for ' .. client.name)
           vim.lsp.semantic_tokens.enable(true, { bufnr = bufnr })
@@ -88,6 +92,9 @@ return {
             },
             settings = {
               java = {
+                -- Prefer real -sources.jar over fernflower decompile for deps.
+                maven = { downloadSources = true },
+                eclipse = { downloadSources = true },
                 contentProvider = { preferred = 'fernflower' },
                 configuration = {
                   runtimes = {
