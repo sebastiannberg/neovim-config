@@ -1,12 +1,10 @@
 return {
   "folke/trouble.nvim",
+  enabled = false,
   keys = {
     { "<leader>dd", function() require("trouble").toggle("diagnostics", { focus = true }) end, desc = "Diagnostics (workspace)" },
   },
   opts = {
-    win = {
-      type = "float",
-    },
     focus = true,
     auto_refresh = true,
     keys = {

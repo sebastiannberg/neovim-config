@@ -1,5 +1,6 @@
 return {
   "mfussenegger/nvim-dap",
+  enabled = false,
   keys = {
     { "<leader>dc", function() require("dap").continue() end, desc = "DAP Continue" },
     { "<leader>do", function() require("dap").step_over() end, desc = "DAP Step Over" },
