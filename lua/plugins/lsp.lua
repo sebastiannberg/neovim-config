@@ -111,6 +111,31 @@ return {
         end,
       })
 
+      -- Reload every Java project from disk: jdtls' java.project.import re-imports and
+      -- updates all workspace projects (vscode-java's "Java: Reload Projects"), picking up
+      -- files created outside the editor — e.g. a git branch switch while nvim was closed.
+      -- Closest jdtls equivalent of Eclipse's F5 refresh.
+      vim.api.nvim_create_user_command('JdtRefresh', function()
+        local client = vim.lsp.get_clients({ name = 'jdtls' })[1]
+        if not client then
+          vim.notify('JdtRefresh: no jdtls client running', vim.log.levels.WARN)
+          return
+        end
+        client:request('workspace/executeCommand', { command = 'java.project.import' }, function(err)
+          if err then
+            vim.notify('JdtRefresh failed: ' .. err.message, vim.log.levels.ERROR)
+          else
+            vim.notify('JdtRefresh: projects reloaded from disk')
+          end
+        end)
+      end, { desc = 'Reload Java projects from disk (jdtls java.project.import)' })
+
+      -- Re-sync every Maven module's classpath from its pom without the project picker
+      -- that :JdtUpdateConfig shows in multi-module reactors.
+      vim.api.nvim_create_user_command('JdtUpdateAll', function()
+        require('jdtls').update_projects_config({ select_mode = 'all' })
+      end, { desc = 'Update config for all Java projects (no picker)' })
+
       -- go
       vim.lsp.config('gopls', {
         on_attach = on_attach,
